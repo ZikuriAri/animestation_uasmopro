@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//nyoba push di setting lewat branch lain
 class Setting extends StatelessWidget {
   const Setting({super.key});
 
