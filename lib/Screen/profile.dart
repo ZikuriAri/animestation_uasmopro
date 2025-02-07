@@ -2,205 +2,172 @@ import 'package:flutter/material.dart';
 import 'package:animestation_project_uas/Auth/login.dart';
 import 'package:animestation_project_uas/Screen/setting.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
 
-  void _onMenuSelected(BuildContext context, String option) {
-    switch (option) {
-      case 'Change Username':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Change Username selected')),
-        );
-        break;
-      case 'Change Password':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Change Password selected')),
-        );
-        break;
-      case 'Privacy Settings':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Privacy Settings selected')),
-        );
-        break;
-      case 'Notifications':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Notifications selected')),
-        );
-        break;
-      case 'Logout':
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const Login()),
-          (route) => false,
-        );
-        break;
-    }
-  }
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
 
+class _ProfilePageState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Latar belakang gambar
           Container(
-            decoration: BoxDecoration(
+            height: 250,
+            decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/BE.jpeg'), // Path gambar latar belakang
+                image: AssetImage('assets/images/koboo.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          // Konten halaman
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Foto Profil, Nama Pengguna, dan PopupMenu
-                Row(
+          Column(
+            children: [
+              const SizedBox(height: 200),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: AssetImage(
-                          'assets/images/koboo.jpg'), // Gunakan AssetImage untuk gambar lokal
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                    Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 45,
+                          backgroundImage: AssetImage('assets/images/kobo.jpg'),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Expanded(
-                                child: Text(
-                                  'Your Profile',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 0, 0, 0), // Warna teks
+                              Row(
+                                children: [
+                                  const Text(
+                                    'User123',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ),
-                              PopupMenuButton<String>(
-                                onSelected: (option) =>
-                                    _onMenuSelected(context, option),
-                                itemBuilder: (BuildContext context) => [
-                                  const PopupMenuItem(
-                                    value: 'Change Username',
-                                    child: Text('Change Username'),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'Change Password',
-                                    child: Text('Change Password'),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'Settings',
-                                    child: Text('Settings'),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'Notifications',
-                                    child: Text('Notifications'),
-                                  ),
-                                  const PopupMenuItem(
-                                    value: 'Logout',
-                                    child: Text('Logout'),
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, color: Colors.black),
+                                    onPressed: () {},
                                   ),
                                 ],
-                                icon: const Icon(
-                                  Icons.menu,
-                                  color: Color.fromARGB(255, 0, 0, 0), // Warna ikon
-                                ),
+                              ),
+                              const Text(
+                                'Anime Lover | Movie Enthusiast',
+                                style: TextStyle(fontSize: 16, color: Colors.grey),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'Penulis | Book Lover',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Color.fromARGB(255, 0, 0, 0), // Warna teks
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          const Text(
-                            'Pengikut: 1200',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color.fromARGB(255, 15, 15, 15), // Warna teks
-                            ),
-                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildStatItem('1200', 'Followers'),
+                        _buildStatItem('350', 'Watching'),
+                        _buildStatItem('50', 'Favorites'),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Favorite Shows',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 150,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          _buildFavoriteItem('Demon Slayer', 'assets/images/Demon.jpg'),
+                          _buildFavoriteItem('Attack on Titan', 'assets/images/levi.png'),
+                          _buildFavoriteItem('Jujutsu Kaisen', 'assets/images/jujutsu.jpg'),
                         ],
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Preferences',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Column(
+                      children: [
+                        _buildPreferenceItem(Icons.notifications, 'Pengingat'),
+                        _buildPreferenceItem(Icons.download, 'Unduh'),
+                        _buildPreferenceItem(Icons.settings, 'Pengaturan'),
+                      ],
+                    ),
                   ],
                 ),
-                const SizedBox(height: 20),
-
-                // Bio Pengguna
-                const Text(
-                  'Tentang Kami:',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 0, 0, 0), // Warna teks
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Perkenalkan kami dari kelompok 7. '
-                  'Saya dari kelas TIF RP 22 CID',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color.fromARGB(255, 0, 0, 0), // Warna teks
-                  ),
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
+
+  Widget _buildStatItem(String value, String label) {
+    return Column(
+      children: [
+        Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(label, style: const TextStyle(color: Colors.grey)),
+      ],
+    );
+  }
+
+  Widget _buildFavoriteItem(String title, String imagePath) {
+    return Container(
+      width: 120,
+      margin: const EdgeInsets.only(right: 10),
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(imagePath, width: 120, height: 100, fit: BoxFit.cover),
+          ),
+          const SizedBox(height: 5),
+          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPreferenceItem(IconData icon, String title) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.black),
+      title: Text(title, style: const TextStyle(fontSize: 16)),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+      onTap: () {},
+    );
+  }
 }
 
-// Card untuk setiap cerita yang dipublikasikan atau dalam draf
-class ProfileStoryCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final String status;
-
-  const ProfileStoryCard({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.status,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 4.0,
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        subtitle: Text(description),
-        trailing: Chip(
-          label: Text(status),
-          backgroundColor: status == 'Published' ? Colors.green : Colors.orange,
-        ),
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Opening $title')),
-          );
-        },
       ),
     );
   }
