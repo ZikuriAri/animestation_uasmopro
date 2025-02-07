@@ -1,3 +1,4 @@
+import 'package:animestation_project_uas/Widget/detail_anime_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,6 +11,7 @@ Future<void> main() async {
     url: 'https://biuecnhtyxbkmdtetuio.supabase.co',  // Ganti dengan URL Supabase-mu
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpdWVjbmh0eXhia21kdGV0dWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg1OTkwODAsImV4cCI6MjA1NDE3NTA4MH0.-6m89p8iO0BmdtY7ZeqWzIuQg9oAdYca3uSznWMXSWQ',  // Ganti dengan Anon Key dari Supabase
   );
+  WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const MyApp());
 }

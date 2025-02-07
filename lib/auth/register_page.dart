@@ -110,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return CustomScaffold(
       child: Container(
         width: 400,
-        height: 500,
+        height: 360,
         padding: const EdgeInsets.all(16.0),
         margin: const EdgeInsets.symmetric(horizontal: 24.0),
         decoration: BoxDecoration(
@@ -130,7 +130,6 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.asset('assets/images/zikuriari.png', height: 80),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0),
                 child: Text(
