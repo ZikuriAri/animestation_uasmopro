@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "E:/Kampus/Smester 5/Mobile Programing/UAS/animestation_uasmopro/windows"
+    "cmake.sourceDirectory": "E:/Kampus/Smester 5/Mobile Programing/UAS/animestation_uasmopro/windows",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

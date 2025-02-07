@@ -143,4 +143,3 @@ class GenreButton extends StatelessWidget {
   }
 }
 
-
