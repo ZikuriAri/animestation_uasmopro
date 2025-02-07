@@ -64,7 +64,7 @@ class _LoginScreenState extends State<Login> {
     return CustomScaffold(
       child: Container(
         width: 400,
-        height: 480,
+        height: 390,
         padding: const EdgeInsets.all(16.0),
         margin: const EdgeInsets.symmetric(horizontal: 24.0),
         decoration: BoxDecoration(
@@ -84,7 +84,6 @@ class _LoginScreenState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Image.asset('assets/images/zikuriari.png', height: 80),
               const Padding(
                 padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                 child: Text(

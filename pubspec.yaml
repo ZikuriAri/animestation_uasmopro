@@ -38,7 +38,6 @@ dependencies:
   supabase_flutter: ^2.8.3
   chewie: ^1.10.0
   video_player: ^2.9.2
-  better_player: ^0.0.84
 
 dev_dependencies:
   flutter_test:
