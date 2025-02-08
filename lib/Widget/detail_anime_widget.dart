@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:animestation_project_uas/Screen/play_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class DetailAnimeWidget extends StatelessWidget {
+class DetailAnimeWidget extends StatefulWidget {
+  final String animeId;
   final String title;
   final String genre;
   final String imageUrl;
@@ -10,6 +12,7 @@ class DetailAnimeWidget extends StatelessWidget {
 
   const DetailAnimeWidget({
     super.key,
+    required this.animeId,
     required this.title,
     required this.genre,
     required this.imageUrl,
@@ -18,41 +21,52 @@ class DetailAnimeWidget extends StatelessWidget {
   });
 
   @override
+  _DetailAnimeWidgetState createState() => _DetailAnimeWidgetState();
+}
+
+class _DetailAnimeWidgetState extends State<DetailAnimeWidget> {
+  List<dynamic> episodes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEpisodes();
+  }
+
+  Future<void> fetchEpisodes() async {
+    try {
+      final response = await Supabase.instance.client
+          .from('episodes')
+          .select()
+          .eq('anime_id', widget.animeId)
+          .order('episode_number', ascending: true);
+      setState(() {
+        episodes = response as List<dynamic>;
+      });
+    } catch (error) {
+      print('Error fetching episodes: $error');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Gambar background atas
           Image.network(
-            imageUrl,
+            widget.imageUrl,
             width: double.infinity,
             height: 250,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.broken_image, size: 100),
           ),
-
-          // Tombol Kembali
-          Positioned(
-            top: 40, // Posisi agar tidak tertutup status bar
-            left: 10,
-            child: GestureDetector(
-              onTap: () {
+          SafeArea(
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              onPressed: () {
                 Navigator.pop(context);
               },
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 24),
-              ),
             ),
           ),
-
-          // Konten Utama
           SingleChildScrollView(
             child: Column(
               children: [
@@ -69,110 +83,14 @@ class DetailAnimeWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Informasi Anime
-                      Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.network(
-                              imageUrl,
-                              width: 120,
-                              height: 160,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.broken_image, size: 100),
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                genre,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                releaseYear,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-
+                      Text(widget.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      Text(widget.genre, style: const TextStyle(color: Colors.grey)),
+                      Text(widget.releaseYear, style: const TextStyle(color: Colors.grey)),
                       const SizedBox(height: 20),
-
-                      // Deskripsi Anime
-                      const Text(
-                        "Synopsis:",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        description,
-                        style: const TextStyle(fontSize: 16, height: 1.5),
-                      ),
-
+                      const Text("Synopsis:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(widget.description, style: const TextStyle(fontSize: 16)),
                       const SizedBox(height: 20),
-
-                      // Tombol Play & Info
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              // Aksi saat tombol play ditekan
-                            },
-                            child: Container(
-                              width: 250,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.blueAccent,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: const Center(
-                                child: Icon(Icons.play_arrow, color: Colors.white, size: 30),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: Colors.blueAccent),
-                            ),
-                            child: const Center(
-                              child: Icon(Icons.info_outline, color: Colors.blueAccent, size: 30),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // Judul Episode
-                      const Text(
-                        "Episodes",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 10),
-
-                      // Daftar Episode dalam Grid
+                      // Tombol Episode
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -180,22 +98,18 @@ class DetailAnimeWidget extends StatelessWidget {
                           crossAxisCount: 5,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
-                          childAspectRatio: 1,
                         ),
-                        itemCount: 25, // Jumlah episode
+                        itemCount: episodes.length,
                         itemBuilder: (context, index) {
-                          int episodeNumber = index + 1; // Nomor episode
-
+                          final episode = episodes[index];
                           return GestureDetector(
                             onTap: () {
-                              // Navigasi ke PlayScreen dengan episode yang dipilih
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => PlayScreen(
-                                    videoUrl:
-                                        "https://biuecnhtyxbkmdtetuio.supabase.co/storage/v1/object/public/video/episode_$episodeNumber.mp4",
-                                    episodeNumber: episodeNumber,
+                                    videoUrl: episode['video_url'],
+                                    episodeNumber: episode['episode_number'],
                                   ),
                                 ),
                               );
@@ -206,14 +120,7 @@ class DetailAnimeWidget extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Center(
-                                child: Text(
-                                  "$episodeNumber",
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                child: Text("${episode['episode_number']}", style: const TextStyle(color: Colors.white, fontSize: 18)),
                               ),
                             ),
                           );

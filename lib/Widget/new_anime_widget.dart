@@ -23,14 +23,12 @@ class _NewAnimeWidgetState extends State<NewAnimeWidget> {
 
   Future<void> fetchAnime() async {
     try {
+      // Hapus .execute() karena tidak digunakan di supabase_flutter v2.8.3
       final response = await supabase
           .from('animes')
-          .select('title, genre, rating, image_url')
-          .order('created_at', ascending: false)
-          .limit(10);
-
+          .select('id, title, genre, rating, image_url, description, release_year');
       setState(() {
-        animeList = response;
+        animeList = response as List<dynamic>;
         isLoading = false;
       });
     } catch (error) {
@@ -59,18 +57,22 @@ class _NewAnimeWidgetState extends State<NewAnimeWidget> {
                 itemCount: animeList.length,
                 itemBuilder: (context, index) {
                   final anime = animeList[index];
-
                   return InkWell(
                     onTap: () {
                       Navigator.push(
-                         context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailAnimeWidget(
-                              title: anime["title"] ?? "No Title",
-                              genre: anime["genre"] is List ? anime["genre"].join(', ') : anime["genre"] ?? "Unknown Genre",
-                              imageUrl: anime["image_url"] ?? "https://via.placeholder.com/150",
-                              description: anime["description"] ?? "No description available.",
-                              releaseYear: anime["release_year"] ?? "Unknown Year",
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailAnimeWidget(
+                            // Kirim animeId agar DetailAnimeWidget dapat mengambil data episode
+                            animeId: anime["id"],
+                            title: anime["title"] ?? "No Title",
+                            // Jika genre berupa List, pastikan dikonversi dengan benar
+                            genre: anime["genre"] is List
+                                ? (anime["genre"] as List<dynamic>).join(', ')
+                                : anime["genre"] ?? "Unknown Genre",
+                            imageUrl: anime["image_url"] ?? "https://via.placeholder.com/150",
+                            description: anime["description"] ?? "No description available.",
+                            releaseYear: anime["release_year"]?.toString() ?? "Unknown Year",
                           ),
                         ),
                       );
@@ -92,28 +94,25 @@ class _NewAnimeWidgetState extends State<NewAnimeWidget> {
                         const SizedBox(height: 5),
                         Text(
                           anime["title"] ?? "No Title",
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           anime["genre"] is List
-                              ? anime["genre"].join(', ')
+                              ? (anime["genre"] as List<dynamic>).join(', ')
                               : anime["genre"] ?? "Unknown Genre",
                           style: const TextStyle(color: Colors.grey),
                         ),
                         const SizedBox(height: 5),
-                                    Row(children: [
-                                      const Icon(Icons.stars,
-                                      color: Colors.amber),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        anime["rating"]?.toString()??"N/A",
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16
-                                        ),
-                                      )
-                                    ]),
+                        Row(
+                          children: [
+                            const Icon(Icons.stars, color: Colors.amber),
+                            const SizedBox(width: 5),
+                            Text(
+                              anime["rating"]?.toString() ?? "N/A",
+                              style: const TextStyle(color: Colors.black, fontSize: 16),
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   );

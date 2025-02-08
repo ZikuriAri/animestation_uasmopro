@@ -1,86 +1,130 @@
 import 'package:flutter/material.dart';
 import 'package:animestation_project_uas/Widget/new_anime_widget.dart';
 import 'package:animestation_project_uas/Widget/upcoming_widget.dart';
+import 'package:animestation_project_uas/Screen/search_screen.dart';
 
-class Dashboard extends StatelessWidget {
-  
-  const Dashboard({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({Key? key}) : super(key: key);
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  // Misalnya, Anda sudah punya nama user dari proses login.
+  // Jika belum, Anda bisa mengambilnya secara asinkronus seperti yang sebelumnya.
+  String userName = "Your Name";
+  bool isLoadingName = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFCEFF6), // Background soft pink
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Column(
-           children: [
-            Padding(padding: EdgeInsets.symmetric(vertical: 18, horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Hello Your Name",
-                        style: TextStyle(
-                          color: const Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 28,
-                          fontWeight: FontWeight.w500,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header: Menampilkan sapaan dengan nama pengguna
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Teks sapaan dengan nama pengguna (atau "Loading..." jika data belum siap)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        isLoadingName
+                            ? const Text(
+                                "Loading...",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              )
+                            : Text(
+                                "Hello $userName",
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                        const Text(
+                          "What to Watch?",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
                         ),
+                      ],
+                    ),
+                    // Avatar Profil (pastikan asset gambar tersedia)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: Image.asset(
+                        "assets/images/koboo.jpg",
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
                       ),
-                       Text(
-                        "What to Watch?",
-                        style: TextStyle(
-                          color: const Color.fromARGB(255, 105, 105, 105),
-                        ),
-                      ),
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Search Bar
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.asset("assets/images/koboo.jpg",
-                    height: 70,
-                    width: 70,
+                  child: TextField(
+                    onSubmitted: (query) {
+                      // Jika query tidak kosong, navigasi ke SearchScreen
+                      if (query.trim().isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SearchScreen(query: query.trim()),
+                          ),
+                        );
+                      }
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon:
+                          const Icon(Icons.search, color: Colors.black),
+                      hintText: "Search",
+                      border: InputBorder.none,
+                      hintStyle: const TextStyle(color: Colors.black54),
                     ),
                   ),
-                ],
-              ),
-
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              height: 60,
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 255, 255, 255),
-                borderRadius: BorderRadius.circular(10),
-              ),
-               child: Row(children: [
-              Icon(Icons.search,
-              color: const Color.fromARGB(255, 0, 0, 0),
-              size: 30,
-              ),
-              Container(
-                width: 300,
-                margin: EdgeInsets.only(left: 5),
-                child: TextFormField(
-                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "Search",
-                  hintStyle: TextStyle(color: Colors.black54),
                 ),
-                )
-              ),
+                const SizedBox(height: 20),
+                // Judul untuk bagian rekomendasi
+                const Text(
+                  "Rekomendasi Untukmu",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                // Widget untuk menampilkan rekomendasi anime
+                UpcomingWidget(),
+                const SizedBox(height: 20),
+                // Judul untuk bagian rilisan terbaru
+                const Text(
+                  "Rilisan Terbaru",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                // Widget untuk menampilkan anime terbaru
+                NewAnimeWidget(),
               ],
-             ),
             ),
-            SizedBox(height: 30),
-            UpcomingWidget(),
-            SizedBox(height: 40),
-            NewAnimeWidget(),
-           ],
-         ),
+          ),
         ),
       ),
     );

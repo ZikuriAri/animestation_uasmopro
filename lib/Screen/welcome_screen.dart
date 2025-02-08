@@ -1,3 +1,4 @@
+import 'package:animestation_project_uas/nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:animestation_project_uas/Scaffold/custom_scaffold.dart';
 import 'package:animestation_project_uas/Auth/login.dart';

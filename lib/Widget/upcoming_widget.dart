@@ -25,11 +25,10 @@ class _UpcomingWidgetState extends State<UpcomingWidget> {
     try {
       final response = await supabase
           .from('animes')
-          .select('title, genre, image_url, description')
+          .select('id, title, genre, image_url, description, release_year')
           .limit(5);
-
       setState(() {
-        recommendations = response;
+        recommendations = response as List<dynamic>;
         isLoading = false;
       });
     } catch (error) {
@@ -51,16 +50,19 @@ class _UpcomingWidgetState extends State<UpcomingWidget> {
                 child: Row(
                   children: recommendations.map((anime) {
                     return InkWell(
-onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => DetailAnimeWidget(
-        title: anime["title"] ?? "No Title",
-        genre: anime["genre"] is List ? anime["genre"].join(', ') : anime["genre"] ?? "Unknown Genre",
-        imageUrl: anime["image_url"] ?? "https://via.placeholder.com/150",
-        description: anime["description"] ?? "No description available.",
-        releaseYear: anime["release_year"] ?? "Unknown Year",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailAnimeWidget(
+                              animeId: anime["id"],
+                              title: anime["title"] ?? "No Title",
+                              genre: anime["genre"] is List
+                                  ? (anime["genre"] as List<dynamic>).join(', ')
+                                  : anime["genre"] ?? "Unknown Genre",
+                              imageUrl: anime["image_url"] ?? "https://via.placeholder.com/150",
+                              description: anime["description"] ?? "No description available.",
+                              releaseYear: anime["release_year"]?.toString() ?? "Unknown Year",
                             ),
                           ),
                         );

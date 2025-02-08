@@ -167,8 +167,3 @@ class _ProfilePageState extends State<Profile> {
     );
   }
 }
-
-      ),
-    );
-  }
-}
