@@ -36,10 +36,10 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFFCEFF6),
       appBar: AppBar(
         title: Text("Episode ${widget.episodeNumber}"),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color(0xFFFCEFF6),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
