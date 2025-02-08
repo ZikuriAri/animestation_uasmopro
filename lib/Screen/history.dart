@@ -20,21 +20,24 @@ class _WatchHistoryScreenState extends State<WatchHistoryScreen> {
     fetchWatchHistory();
   }
 
-  /// Mengambil data watch history berdasarkan user yang sedang login
+  /// Ambil data history berdasarkan user yang sedang login dan
+  /// sertakan data judul serta gambar anime dari relasi tabel `animes`.
   Future<void> fetchWatchHistory() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) {
+      setState(() {
+        errorMessage = 'User belum login.';
+        isLoading = false;
+      });
+      return;
+    }
     try {
-      final user = supabase.auth.currentUser;
-      if (user == null) {
-        setState(() {
-          errorMessage = 'User belum login.';
-          isLoading = false;
-        });
-        return;
-      }
       final response = await supabase
           .from('watch_history')
-          .select()
-          .eq('user_id', user.id);
+          .select('id, anime_id, episode_number, watched_at, animes(title, image_url)')
+          .eq('user_id', user.id)
+          .order('watched_at', ascending: false);
+
       setState(() {
         watchHistory = response as List<dynamic>;
         isLoading = false;
@@ -47,25 +50,16 @@ class _WatchHistoryScreenState extends State<WatchHistoryScreen> {
     }
   }
 
-  /// Menghapus satu item history dari database dan state lokal
+  /// Fungsi untuk menghapus satu item history
   Future<void> deleteHistoryItem(String historyId, int index) async {
     try {
-      final response = await supabase
-          .from('watch_history')
-          .delete()
-          .eq('id', historyId);
-      if (response.error == null) {
-        setState(() {
-          watchHistory.removeAt(index);
-        });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal menghapus: ${response.error!.message}')),
-        );
-      }
+      await supabase.from('watch_history').delete().eq('id', historyId);
+      setState(() {
+        watchHistory.removeAt(index);
+      });
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi error: $error')),
+        SnackBar(content: Text('Gagal menghapus: $error')),
       );
     }
   }
@@ -83,7 +77,7 @@ class _WatchHistoryScreenState extends State<WatchHistoryScreen> {
               : watchHistory.isEmpty
                   ? const Center(
                       child: Text(
-                        "No history available",
+                        "Belum ada riwayat tontonan",
                         style: TextStyle(fontSize: 18, color: Colors.grey),
                       ),
                     )
@@ -92,10 +86,8 @@ class _WatchHistoryScreenState extends State<WatchHistoryScreen> {
                       itemCount: watchHistory.length,
                       itemBuilder: (context, index) {
                         final historyItem = watchHistory[index];
-                        // Asumsikan tabel watch_history memiliki kolom:
-                        // id, title, genre, image, watched_at
                         return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -104,18 +96,19 @@ class _WatchHistoryScreenState extends State<WatchHistoryScreen> {
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.network(
-                                historyItem["image"] ?? "https://via.placeholder.com/150",
+                                historyItem['animes']['image_url'] ??
+                                    "https://via.placeholder.com/150",
                                 width: 50,
                                 height: 50,
                                 fit: BoxFit.cover,
                               ),
                             ),
                             title: Text(
-                              historyItem["title"] ?? "No Title",
+                              historyItem['animes']['title'] ?? "No Title",
                               style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
-                              "${historyItem["genre"]} • Watched on ${historyItem["watched_at"] != null ? historyItem["watched_at"].toString().substring(0, 10) : ''}",
+                              "Episode ${historyItem["episode_number"]} • Ditonton pada ${historyItem["watched_at"].substring(0, 10)}",
                             ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),

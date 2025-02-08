@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:animestation_project_uas/Widget/new_anime_widget.dart';
-import 'package:animestation_project_uas/Widget/upcoming_widget.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class PlayScreen extends StatefulWidget {
   final String videoUrl;
   final int episodeNumber;
+  final String animeId; // Parameter untuk menyimpan riwayat tontonan
 
   const PlayScreen({
-    super.key,
+    Key? key,
     required this.videoUrl,
     required this.episodeNumber,
-  });
+    required this.animeId,
+  }) : super(key: key);
 
   @override
   State<PlayScreen> createState() => _PlayScreenState();
@@ -23,10 +24,38 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Inisialisasi VideoPlayerController dengan URL video
     _controller = VideoPlayerController.network(widget.videoUrl)
       ..initialize().then((_) {
         setState(() {});
       });
+
+    // Panggil fungsi untuk menyimpan riwayat tontonan
+    saveWatchHistory(widget.animeId, widget.episodeNumber);
+  }
+
+  /// Fungsi untuk menyimpan data riwayat tontonan ke Supabase
+  Future<void> saveWatchHistory(String animeId, int episodeNumber) async {
+    final supabase = Supabase.instance.client;
+    final user = supabase.auth.currentUser;
+
+    if (user == null) {
+      print("User belum login");
+      return;
+    }
+
+    try {
+      await supabase.from('watch_history').upsert({
+        'user_id': user.id,
+        'anime_id': animeId,
+        'episode_number': episodeNumber,
+        'watched_at': DateTime.now().toIso8601String(),
+      });
+      print("Riwayat berhasil disimpan");
+    } catch (error) {
+      print("Gagal menyimpan riwayat: $error");
+    }
   }
 
   @override
@@ -47,8 +76,6 @@ class _PlayScreenState extends State<PlayScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 20),
-
-          // Deskripsi singkat
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
@@ -57,20 +84,14 @@ class _PlayScreenState extends State<PlayScreen> {
               textAlign: TextAlign.center,
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // Video Player
           _controller.value.isInitialized
               ? AspectRatio(
                   aspectRatio: _controller.value.aspectRatio,
                   child: VideoPlayer(_controller),
                 )
               : const Center(child: CircularProgressIndicator()),
-
           const SizedBox(height: 20),
-
-          // Tombol Play/Pause
           ElevatedButton.icon(
             onPressed: () {
               setState(() {
@@ -96,17 +117,14 @@ class _PlayScreenState extends State<PlayScreen> {
             child: Text(
               "Rekomendasi Anime lainnya di bawah ini!",
               style: const TextStyle(
-                fontSize: 22, // Sedikit lebih besar agar lebih jelas
-                fontWeight: FontWeight.bold, // Membuat teks bold
-                color: Colors.black87, // Warna lebih kontras
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
               textAlign: TextAlign.center,
             ),
           ),
-
-          const SizedBox(height: 10),
-                // Widget untuk menampilkan anime terbaru
-                UpcomingWidget(),
+          // Tambahkan widget rekomendasi lainnya jika diperlukan.
         ],
       ),
     );
