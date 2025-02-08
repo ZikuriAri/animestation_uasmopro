@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:animestation_project_uas/Widget/new_anime_widget.dart';
+import 'package:animestation_project_uas/Widget/upcoming_widget.dart';
 
 class PlayScreen extends StatefulWidget {
   final String videoUrl;
@@ -88,6 +90,23 @@ class _PlayScreenState extends State<PlayScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
           ),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              "Rekomendasi Anime lainnya di bawah ini!",
+              style: const TextStyle(
+                fontSize: 22, // Sedikit lebih besar agar lebih jelas
+                fontWeight: FontWeight.bold, // Membuat teks bold
+                color: Colors.black87, // Warna lebih kontras
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          const SizedBox(height: 10),
+                // Widget untuk menampilkan anime terbaru
+                UpcomingWidget(),
         ],
       ),
     );
