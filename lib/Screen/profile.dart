@@ -1,9 +1,9 @@
 import 'package:animestation_project_uas/Screen/login_screen.dart';
 import 'package:animestation_project_uas/auth/login.dart';
 import 'package:flutter/material.dart';
-import 'package:animestation_project_uas/Auth/login.dart';
 import 'package:animestation_project_uas/Screen/setting.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -41,7 +41,7 @@ class _ProfilePageState extends State<Profile> {
   if (mounted) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const login()), // 🔄 Kembali ke halaman Login
+      MaterialPageRoute(builder: (context) => const Login()), // 🔄 Kembali ke halaman Login
     );
   }
 }
@@ -79,7 +79,7 @@ class _ProfilePageState extends State<Profile> {
                         children: [
                           const CircleAvatar(
                             radius: 45,
-                            backgroundImage: AssetImage('assets/images/koboo.jpg'),
+                            backgroundImage: AssetImage('assets/images/ns3.jpg'),
                           ),
                           const SizedBox(width: 16),
                           Expanded(

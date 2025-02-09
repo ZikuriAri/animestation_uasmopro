@@ -81,7 +81,7 @@ class _NewAnimeWidgetState extends State<NewAnimeWidget> {
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
                             anime["image_url"] ?? "https://via.placeholder.com/150",
-                            height: 155,
+                            height: 150,
                             width: double.infinity,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>

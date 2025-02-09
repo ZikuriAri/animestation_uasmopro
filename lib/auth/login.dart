@@ -62,138 +62,107 @@ class _LoginScreenState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      child: Container(
-        width: 400,
-        height: 390,
-        padding: const EdgeInsets.all(16.0),
-        margin: const EdgeInsets.symmetric(horizontal: 24.0),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(237, 255, 255, 255),
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 8.0,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                child: Text(
-                  'Welcome to Your Account',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 60, 61, 65),
+      child: Column(
+        children: [
+          const Spacer(), // ✅ Mendorong form ke bawah
+          Align(
+            alignment: Alignment.bottomCenter, // ✅ Memastikan posisi tetap di bawah
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+              margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10.0,
+                    offset: const Offset(0, 5),
                   ),
-                  textAlign: TextAlign.center,
-                ),
+                ],
               ),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Silakan masukkan email Anda';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Masukkan email yang valid';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 5),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Silakan masukkan password Anda';
-                  }
-                  if (value.length < 6) {
-                    return 'Password minimal 6 karakter';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 5),
-              ElevatedButton(
-                onPressed: isLoading ? null : login,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(237, 255, 255, 255),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                ),
-                child: isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Color.fromARGB(255, 102, 9, 97),
-                        ),
-                      ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5.0),
+              child: Form(
+                key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        // Tambahkan logika login dengan Google jika diperlukan
-                      },
-                      icon: Image.asset('assets/images/google.png', height: 15, width: 15),
-                      label: const Text(
-                        'Login with Google',
-                        style: TextStyle(fontSize: 15),
+                    const Text(
+                      'Selamat datang di Animestation!',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 60, 61, 65),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: Colors.grey),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        elevation: 2,
-                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        // Tambahkan logika login dengan Facebook jika diperlukan
-                      },
-                      icon: Image.asset('assets/images/fb.png', height: 15, width: 15),
-                      label: const Text(
-                        'Login with Facebook',
-                        style: TextStyle(fontSize: 15),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: Colors.grey),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        elevation: 2,
-                      ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Harap isi untuk melanjutkan',
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                      textAlign: TextAlign.center,
                     ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        prefixIcon: const Icon(Icons.email),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Silakan masukkan email Anda';
+                        }
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'Masukkan email yang valid';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        prefixIcon: const Icon(Icons.lock),
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Silakan masukkan password Anda';
+                        }
+                        if (value.length < 6) {
+                          return 'Password minimal 6 karakter';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: isLoading ? null : login,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              'Login',
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                    ),
+                    const SizedBox(height: 15),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -203,15 +172,16 @@ class _LoginScreenState extends State<Login> {
                       },
                       child: const Text(
                         'Belum punya akun? Daftar di sini',
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Colors.blue, fontSize: 14),
                       ),
                     ),
                   ],
                 ),
-              )
-            ],
+              ),
+            ),
           ),
-        ),
+          const SizedBox(height: 20), // ✅ Beri jarak sedikit dari bawah layar
+        ],
       ),
     );
   }

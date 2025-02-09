@@ -58,7 +58,7 @@ class _DashboardState extends State<Dashboard> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(30),
                         child: Image.asset(
-                          "assets/images/koboo.jpg",
+                          "assets/images/ns3.jpg",
                           height: 60,
                           width: 60,
                           fit: BoxFit.cover,
