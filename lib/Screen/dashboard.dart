@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:animestation_project_uas/Widget/new_anime_widget.dart';
 import 'package:animestation_project_uas/Widget/upcoming_widget.dart';
 import 'package:animestation_project_uas/Screen/search_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -11,10 +12,33 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  // Misalnya, Anda sudah punya nama user dari proses login.
-  // Jika belum, Anda bisa mengambilnya secara asinkronus seperti yang sebelumnya.
-  String userName = "Your Name";
-  bool isLoadingName = false;
+  final supabase = Supabase.instance.client;
+  String userEmail = "Guest";
+  bool isLoading = true;
+
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserEmail(); // Panggil fungsi yang benar
+  }
+
+  Future<void> fetchUserEmail() async {
+    final user = supabase.auth.currentUser;
+
+    if (user != null) {
+      setState(() {
+        userEmail = user.email ?? "No Email Found";
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        userEmail = "Guest";
+        isLoading = false;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,50 +53,66 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 // Header: Menampilkan sapaan dengan nama pengguna
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Teks sapaan dengan nama pengguna (atau "Loading..." jika data belum siap)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        isLoadingName
-                            ? const Text(
-                                "Loading...",
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              )
-                            : Text(
-                                "Hello $userName",
-                                style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                        const Text(
-                          "What to Watch?",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
-                          ),
+                    children: [
+                      // Avatar Profil di sebelah kiri
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Image.asset(
+                          "assets/images/koboo.jpg",
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
                         ),
-                      ],
-                    ),
-                    // Avatar Profil (pastikan asset gambar tersedia)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Image.asset(
-                        "assets/images/koboo.jpg",
-                        height: 60,
-                        width: 60,
-                        fit: BoxFit.cover,
                       ),
-                    ),
-                  ],
-                ),
+                      const SizedBox(width: 12), // Jarak antara gambar dan teks
+
+                      // Kolom untuk teks
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          isLoading
+                              ? const Text(
+                                  "Loading...",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                )
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Hello,", // ✅ "Hello," di atas
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      userEmail, // ✅ Email atau Username di bawahnya
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                          const SizedBox(height: 4), // Jarak agar lebih rapi
+                          const Text(
+                            "What to Watch?",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+
                 const SizedBox(height: 20),
                 // Search Bar
                 Container(
@@ -112,7 +152,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 const SizedBox(height: 10),
                 // Widget untuk menampilkan rekomendasi anime
-                UpcomingWidget(),
+                const UpcomingWidget(),
                 const SizedBox(height: 20),
                 // Judul untuk bagian rilisan terbaru
                 const Text(
@@ -121,7 +161,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 const SizedBox(height: 10),
                 // Widget untuk menampilkan anime terbaru
-                NewAnimeWidget(),
+                const NewAnimeWidget(),
               ],
             ),
           ),

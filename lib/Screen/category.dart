@@ -19,17 +19,6 @@ class _CategoryState extends State<Category> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Categories"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Setting()),
-              );
-            },
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),

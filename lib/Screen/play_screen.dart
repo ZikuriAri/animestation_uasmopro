@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:animestation_project_uas/Widget/upcoming_widget.dart';
 
 class PlayScreen extends StatefulWidget {
   final String videoUrl;
@@ -124,6 +125,9 @@ class _PlayScreenState extends State<PlayScreen> {
               textAlign: TextAlign.center,
             ),
           ),
+          const SizedBox(height: 20),
+          const UpcomingWidget(),
+      
           // Tambahkan widget rekomendasi lainnya jika diperlukan.
         ],
       ),
